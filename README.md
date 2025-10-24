@@ -160,7 +160,7 @@ allure generate allure-results --clean -o allure-report
 
 ```bash
 # 1️⃣ Clone repo
-git clone https://github.com/your-org/player-api-framework.git
+git clone https://github.com/ValeriiaKyba/interview_test_app.git
 cd interview_test_app
 
 # 2️⃣ Install dependencies
