@@ -63,6 +63,6 @@ public class TestDataHelper {
     }
 
     public static boolean isCleanupListEmpty() {
-        return createdPlayerIds.isEmpty();
+        return !createdPlayerIds.isEmpty();
     }
 }
