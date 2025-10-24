@@ -1,0 +1,64 @@
+{
+  "positiveDeletes": [
+    {
+      "description": "Supervisor deletes user",
+      "editor": "supervisor",
+      "targetRole": "user"
+    },
+    {
+      "description": "Supervisor deletes admin",
+      "editor": "supervisor",
+      "targetRole": "admin"
+    },
+    {
+      "description": "Admin deletes user",
+      "editor": "admin",
+      "targetRole": "user"
+    },
+    {
+      "description": "Admin deletes admin",
+      "editor": "admin",
+      "targetRole": "admin"
+    }
+  ],
+
+  "negativeDeletes": [
+    {
+      "description": "Delete non-existing player ID",
+      "playerId": 999999,
+      "expectedCode": 404
+    },
+    {
+      "description": "Delete with null ID",
+      "expectedCode": 400
+    },
+    {
+      "description": "Delete with negative ID",
+      "playerId": -1,
+      "expectedCode": 400
+    }
+  ],
+
+  "authDeletes": [
+    {
+      "description": "User tries to delete another user",
+      "editor": "user",
+      "expectedCode": 403
+    },
+    {
+      "description": "User tries to delete self",
+      "editor": "user",
+      "expectedCode": 403
+    },
+    {
+      "description": "Supervisor tries to delete another supervisor",
+      "editor": "supervisor",
+      "expectedCode": 403
+    },
+    {
+      "description": "Non-existent editor tries to delete player",
+      "editor": "ghost_user",
+      "expectedCode": 401
+    }
+  ]
+}

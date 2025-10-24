@@ -1,0 +1,239 @@
+{
+  "positivePlayers": [
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "male",
+      "login": "user_valid_01",
+      "role": "user",
+      "screenName": "screen_valid_01",
+      "password": "12pass34",
+      "description": "Supervisor creates valid user"
+    },
+    {
+      "editor": "supervisor",
+      "age": 30,
+      "gender": "female",
+      "login": "admin_valid_02",
+      "role": "admin",
+      "screenName": "screen_valid_02",
+      "password": "abc123test45",
+      "description": "Supervisor creates valid admin"
+    },
+    {
+      "editor": "admin",
+      "age": 28,
+      "gender": "male",
+      "login": "user_valid_03",
+      "role": "user",
+      "screenName": "screen_valid_03",
+      "password": "abc12345",
+      "description": "Admin creates valid user"
+    },
+    {
+      "editor": "supervisor",
+      "age": 59,
+      "gender": "female",
+      "login": "user_valid_04",
+      "role": "user",
+      "screenName": "screen_valid_04",
+      "description": "Valid user without password (optional)"
+    }
+  ],
+
+  "negativePlayers": [
+    {
+      "editor": "supervisor",
+      "age": 15,
+      "gender": "male",
+      "login": "too_young_01",
+      "role": "user",
+      "screenName": "screen_young_01",
+      "password": "pass1234",
+      "reason": "Age below 16"
+    },
+    {
+      "editor": "admin",
+      "age": 61,
+      "gender": "female",
+      "login": "too_old_01",
+      "role": "user",
+      "screenName": "screen_old_01",
+      "password": "pass1234",
+      "reason": "Age above 60"
+    },
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "unknown",
+      "login": "invalid_gender_01",
+      "role": "user",
+      "screenName": "screen_gender_01",
+      "password": "pass1234",
+      "reason": "Invalid gender"
+    },
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "male",
+      "login": "invalid_role_01",
+      "role": "manager",
+      "screenName": "screen_role_01",
+      "password": "pass1234",
+      "reason": "Invalid role not in [admin, user]"
+    },
+    {
+      "editor": "admin",
+      "age": 25,
+      "gender": "male",
+      "login": "missing_role_01",
+      "screenName": "screen_no_role_01",
+      "password": "pass1234",
+      "reason": "Missing role field"
+    },
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "male",
+      "login": "short_pass_01",
+      "role": "user",
+      "screenName": "screen_pass_01",
+      "password": "12n45",
+      "reason": "Password too short"
+    },
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "female",
+      "login": "long_pass_01",
+      "role": "admin",
+      "screenName": "screen_pass_long_01",
+      "password": "abcdefgh7klmno9qrstuvwxyz",
+      "reason": "Password too long"
+    },
+    {
+      "editor": "supervisor",
+      "age": 25,
+      "gender": "male",
+      "login": "invalid_chars_01",
+      "role": "user",
+      "screenName": "screen_invalid_01",
+      "password": "1h%%%%",
+      "reason": "Invalid password format"
+    },
+    {
+      "editor": "admin",
+      "age": 25,
+      "gender": "female",
+      "login": "letters_pass_01",
+      "role": "user",
+      "screenName": "screen_pass_letters_01",
+      "password": "abcdefgh",
+      "reason": "Password contains only letters"
+    },
+    {
+      "editor": "admin",
+      "age": 25,
+      "gender": "female",
+      "login": "numbers_pass_01",
+      "role": "user",
+      "screenName": "screen_pass_numbers_01",
+      "password": "12345",
+      "reason": "Password contains only numbers"
+    }
+  ],
+
+  "authErrors": [
+    {
+      "editor": "ghost_user",
+      "age": 25,
+      "gender": "male",
+      "login": "ghost_login_01",
+      "role": "user",
+      "screenName": "ghost_screen_01",
+      "password": "pass1234",
+      "expectedCode": 401,
+      "reason": "Non-existent editor"
+    },
+    {
+      "editor": "user",
+      "age": 25,
+      "gender": "male",
+      "login": "unauthorized_create_01",
+      "role": "user",
+      "screenName": "unauthorized_screen_01",
+      "password": "pass1234",
+      "expectedCode": 403,
+      "reason": "User cannot create new player (forbidden)"
+    }
+  ],
+
+  "duplicatePlayers": [
+    {
+      "description": "Duplicate login between two users",
+      "first": {
+        "editor": "supervisor",
+        "age": 26,
+        "gender": "male",
+        "login": "dup_login_test",
+        "role": "user",
+        "screenName": "screen_dup_1",
+        "password": "pass12345"
+      },
+      "second": {
+        "editor": "admin",
+        "age": 29,
+        "gender": "female",
+        "login": "dup_login_test",
+        "role": "user",
+        "screenName": "screen_dup_2",
+        "password": "pass12345"
+      },
+      "expectedStatus": 409
+    },
+    {
+      "description": "Duplicate screenName between two users",
+      "first": {
+        "editor": "supervisor",
+        "age": 32,
+        "gender": "male",
+        "login": "unique_login_1",
+        "role": "user",
+        "screenName": "dup_screen_test",
+        "password": "abc12345"
+      },
+      "second": {
+        "editor": "supervisor",
+        "age": 34,
+        "gender": "female",
+        "login": "unique_login_2",
+        "role": "user",
+        "screenName": "dup_screen_test",
+        "password": "abc12345"
+      },
+      "expectedStatus": 409
+    },
+    {
+      "description": "Duplicate login and screenName between two users",
+      "first": {
+        "editor": "admin",
+        "age": 29,
+        "gender": "male",
+        "login": "dup_both_test",
+        "role": "user",
+        "screenName": "dup_both_screen",
+        "password": "abc12345"
+      },
+      "second": {
+        "editor": "admin",
+        "age": 28,
+        "gender": "female",
+        "login": "dup_both_test",
+        "role": "user",
+        "screenName": "dup_both_screen",
+        "password": "abc12345"
+      },
+      "expectedStatus": 409
+    }
+  ]
+}

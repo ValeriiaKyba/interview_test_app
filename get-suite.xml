@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Player Get Suite" parallel="methods" thread-count="${get.thread.count}">
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="listeners.TestListener"/>
+    </listeners>
+
+    <test name="Get Player Tests">
+        <classes>
+            <class name="tests.PlayerGetTests"/>
+        </classes>
+    </test>
+</suite>

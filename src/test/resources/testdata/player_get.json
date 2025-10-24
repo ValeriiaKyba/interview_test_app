@@ -1,0 +1,35 @@
+{
+  "positiveGet": [
+    {
+      "description": "Retrieving user with role supervisor",
+      "targetRole": "supervisor"
+    },
+    {
+      "description": "Retrieving user with role admin",
+      "targetRole": "admin"
+    },
+    {
+      "description": "Retrieving user with role user",
+      "targetRole": "user"
+    }
+  ],
+
+  "negativeGet": [
+    {
+      "description": "Trying to get non-existing player",
+      "playerId": 999999,
+      "expectedCode": 404
+    }
+  ],
+
+  "getAll": [
+    {
+      "description": "Get all players",
+      "targetRoles": [
+        "user",
+        "admin",
+        "supervisor"
+      ]
+    }
+  ]
+}

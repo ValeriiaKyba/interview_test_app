@@ -1,0 +1,111 @@
+{
+  "positiveUpdate": [
+    {
+      "description": "Supervisor updates user fully",
+      "editor": "supervisor",
+      "roleToCreate": "user",
+      "updateFields": ["age", "gender", "login", "screenName", "password", "role"]
+    },
+    {
+      "description": "Supervisor updates admin partially (only login)",
+      "editor": "supervisor",
+      "roleToCreate": "admin",
+      "updateFields": ["login"]
+    },
+    {
+      "description": "Admin updates user (change screenName and password)",
+      "editor": "admin",
+      "roleToCreate": "user",
+      "updateFields": ["screenName", "password"]
+    },
+    {
+      "description": "Admin updates another admin (login only)",
+      "editor": "admin",
+      "roleToCreate": "admin",
+      "updateFields": ["login"]
+    },
+    {
+      "description": "User updates own data (change password and screenName)",
+      "editor": "user",
+      "roleToCreate": "user",
+      "updateFields": ["password", "screenName"]
+    },
+    {
+      "description": "User updates own data with only one field (password)",
+      "editor": "user",
+      "roleToCreate": "user",
+      "updateFields": ["password"]
+    },
+    {
+      "description": "Supervisor sends PATCH with no fields (no update)",
+      "editor": "supervisor",
+      "roleToCreate": "user",
+      "updateFields": []
+    }
+  ],
+
+  "negativeUpdate": [
+    {
+      "description": "Admin tries to update supervisor",
+      "editor": "admin",
+      "roleToCreate": "supervisor",
+      "expectedCode": 403
+    },
+    {
+      "description": "User tries to update another user",
+      "editor": "user",
+      "roleToCreate": "user",
+      "expectedCode": 403
+    },
+    {
+      "description": "User tries to update admin",
+      "editor": "user",
+      "roleToCreate": "admin",
+      "expectedCode": 403
+    },
+    {
+      "description": "Supervisor updates another supervisor (forbidden)",
+      "editor": "supervisor",
+      "roleToCreate": "supervisor",
+      "expectedCode": 403
+    },
+    {
+      "description": "Supervisor updates user with invalid gender",
+      "editor": "supervisor",
+      "roleToCreate": "user",
+      "updateGender": "unknown",
+      "expectedCode": 400
+    },
+    {
+      "description": "Admin updates user with invalid age",
+      "editor": "admin",
+      "roleToCreate": "user",
+      "updateAge": 10,
+      "expectedCode": 400
+    },
+    {
+      "description": "Supervisor updates user with invalid role",
+      "editor": "supervisor",
+      "roleToCreate": "user",
+      "updateRole": "manager",
+      "expectedCode": 400
+    }
+  ],
+
+  "duplicateUpdate": [
+    {
+      "description": "Admin tries to update user with duplicate login",
+      "editor": "admin",
+      "roleToCreate": "user",
+      "duplicateField": "login",
+      "expectedCode": 409
+    },
+    {
+      "description": "Supervisor tries to update user with duplicate screenName",
+      "editor": "supervisor",
+      "roleToCreate": "user",
+      "duplicateField": "screenName",
+      "expectedCode": 409
+    }
+  ]
+}
