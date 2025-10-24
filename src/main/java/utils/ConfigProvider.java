@@ -12,7 +12,7 @@ import static java.util.Objects.nonNull;
 
 public class ConfigProvider {
 
-    private static final String INNER_PROPERTY_PATTERN = "\\$\\{([a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*+)\\}";
+    private static final String INNER_PROPERTY_PATTERN = "\\$\\{([a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*+)}";
     private static final ConfigProvider INSTANCE = new ConfigProvider();
 
     private Properties properties = new Properties();

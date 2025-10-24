@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 public class PlayerDeleteTests {
 
     private PlayerClient client;
+    private static final String CREATOR = "supervisor";
 
     @BeforeClass
     public void setup() {
@@ -27,7 +28,7 @@ public class PlayerDeleteTests {
     public void testDeletePlayerPositive(String description, String editor, String targetRole) {
         AllureHelper.addStep("Positive case: " + description);
 
-        PlayerCreateResponseDto created = TestDataHelper.createPlayer("supervisor", targetRole);
+        PlayerCreateResponseDto created = TestDataHelper.createPlayer(CREATOR, targetRole);
 
         PlayerDeleteRequestDto request = new PlayerDeleteRequestDto.Builder()
                 .playerId(created.getId())
@@ -43,7 +44,7 @@ public class PlayerDeleteTests {
     public void testDeletePlayerNegative(String description, PlayerDeleteRequestDto request, int expectedCode) {
         AllureHelper.addStep("Negative case: " + description);
 
-        Response resp = client.deletePlayer("supervisor", request);
+        Response resp = client.deletePlayer(CREATOR, request);
         Assert.assertEquals(resp.getStatusCode(), expectedCode,
                 "Expected error code for invalid deletion attempt");
         AllureHelper.attachText("Response", resp.asPrettyString());
@@ -51,27 +52,22 @@ public class PlayerDeleteTests {
 
     // Auth & Permission scenarios
     @Test(dataProvider = "authDeletes", dataProviderClass = PlayerDeleteDataProvider.class)
-    public void testDeletePlayerUnauthorized(String description, String editor, int expectedCode) {
+    public void testDeletePlayerUnauthorized(String description, String editor, String targetRole, int expectedCode) {
         AllureHelper.addStep("Authorization/Permission test: " + description);
 
         String actingEditorLogin;
         Long targetPlayerId;
 
         switch (description) {
-            case "User tries to delete another user" -> {
-                TestDataHelper.PlayerPair pair = TestDataHelper.createPlayerPair("supervisor", "user", "user");
+            case "User tries to delete another user", "Supervisor tries to delete another supervisor" -> {
+                TestDataHelper.PlayerPair pair = TestDataHelper.createPlayerPair(CREATOR, editor, targetRole);
                 actingEditorLogin = pair.editor().getLogin();
                 targetPlayerId = pair.target().getId();
             }
             case "User tries to delete self" -> {
-                PlayerCreateResponseDto user = TestDataHelper.createPlayer("supervisor", "user");
+                PlayerCreateResponseDto user = TestDataHelper.createPlayer(CREATOR, editor);
                 actingEditorLogin = user.getLogin();
                 targetPlayerId = user.getId();
-            }
-            case "Supervisor tries to delete another supervisor" -> {
-                TestDataHelper.PlayerPair pair = TestDataHelper.createPlayerPair("supervisor", "supervisor", "supervisor");
-                actingEditorLogin = pair.editor().getLogin();
-                targetPlayerId = pair.target().getId();
             }
             default -> throw new IllegalArgumentException("Unhandled auth scenario: " + description);
         }

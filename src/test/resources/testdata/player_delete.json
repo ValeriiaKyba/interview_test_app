@@ -43,6 +43,7 @@
     {
       "description": "User tries to delete another user",
       "editor": "user",
+      "targetRole": "user",
       "expectedCode": 403
     },
     {
@@ -53,6 +54,7 @@
     {
       "description": "Supervisor tries to delete another supervisor",
       "editor": "supervisor",
+      "targetRole": "supervisor",
       "expectedCode": 403
     },
     {

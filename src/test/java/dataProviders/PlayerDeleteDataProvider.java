@@ -56,8 +56,9 @@ public class PlayerDeleteDataProvider {
         for (JsonNode node : array) {
             String description = node.get("description").asText();
             String editor = node.get("editor").asText();
+            String targetRole = node.has("targetRole") ? node.get("targetRole").asText() : null;
             int expectedCode = node.get("expectedCode").asInt();
-            data.add(new Object[]{description, editor, expectedCode});
+            data.add(new Object[]{description, editor, targetRole, expectedCode});
         }
         return data.toArray(new Object[0][0]);
     }
