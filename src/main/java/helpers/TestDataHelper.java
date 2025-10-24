@@ -52,6 +52,12 @@ public class TestDataHelper {
 
     public static void cleanupAll() {
         AllureHelper.addStep("Cleanup all created players...");
+
+        if (createdPlayerIds.isEmpty()) {
+            AllureHelper.addStep("Nothing to clean up — no players were created in this test.");
+            return;
+        }
+
         for (Long id : createdPlayerIds) {
             try {
                 CleanupHelper.deletePlayerIfExists(id);
@@ -60,9 +66,5 @@ public class TestDataHelper {
             }
         }
         createdPlayerIds.clear();
-    }
-
-    public static boolean isCleanupListEmpty() {
-        return !createdPlayerIds.isEmpty();
     }
 }

@@ -202,9 +202,7 @@ public class PlayerUpdateTests {
 
     @AfterMethod(alwaysRun = true)
     public void cleanupAfterTest(ITestResult result) {
-        if (TestDataHelper.isCleanupListEmpty()) {
-            AllureHelper.addStep("Cleanup after test: " + result.getMethod().getMethodName());
-            TestDataHelper.cleanupAll();
-        }
+        AllureHelper.addStep("Cleaning up after test: " + result.getMethod().getMethodName());
+        TestDataHelper.cleanupAll();
     }
 }
