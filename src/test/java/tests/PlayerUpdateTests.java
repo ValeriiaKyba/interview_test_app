@@ -18,6 +18,7 @@ import java.util.List;
 public class PlayerUpdateTests {
 
     private PlayerClient client;
+    private static final String CREATOR = "supervisor";
 
     @BeforeClass
     public void setup() {
@@ -36,10 +37,10 @@ public class PlayerUpdateTests {
         PlayerCreateResponseDto target;
         
         if ("user".equals(editor)) {
-            target = TestDataHelper.createPlayer("supervisor", "user");
+            target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
             editor = target.getLogin();
         } else {
-            target = TestDataHelper.createPlayer("supervisor", roleToCreate);
+            target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
         }
 
         TestDataHelper.registerForCleanup(target.getId());
@@ -114,14 +115,14 @@ public class PlayerUpdateTests {
         PlayerCreateResponseDto target;
 
         if ("user".equals(editor) && "user".equals(roleToCreate)) {
-            PlayerCreateResponseDto userA = TestDataHelper.createPlayer("supervisor", "user");
-            PlayerCreateResponseDto userB = TestDataHelper.createPlayer("supervisor", "user");
+            PlayerCreateResponseDto userA = TestDataHelper.createPlayer(CREATOR, roleToCreate);
+            PlayerCreateResponseDto userB = TestDataHelper.createPlayer(CREATOR, roleToCreate);
             editor = userA.getLogin();
             target = userB;
             TestDataHelper.registerForCleanup(userA.getId());
             TestDataHelper.registerForCleanup(userB.getId());
         } else {
-            target = TestDataHelper.createPlayer("supervisor", roleToCreate);
+            target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
             TestDataHelper.registerForCleanup(target.getId());
         }
 
@@ -144,10 +145,10 @@ public class PlayerUpdateTests {
 
         AllureHelper.addStep("Duplicate scenario: " + description);
 
-        PlayerCreateResponseDto duplicate = TestDataHelper.createPlayer("supervisor", roleToCreate);
+        PlayerCreateResponseDto duplicate = TestDataHelper.createPlayer(CREATOR, roleToCreate);
         TestDataHelper.registerForCleanup(duplicate.getId());
 
-        PlayerCreateResponseDto target = TestDataHelper.createPlayer("supervisor", roleToCreate);
+        PlayerCreateResponseDto target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
         TestDataHelper.registerForCleanup(target.getId());
 
         PlayerUpdateRequestDto.Builder builder = new PlayerUpdateRequestDto.Builder()
@@ -201,7 +202,9 @@ public class PlayerUpdateTests {
 
     @AfterMethod(alwaysRun = true)
     public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleanup after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
+        if (!TestDataHelper.isCleanupListEmpty()) {
+            AllureHelper.addStep("Cleanup after test: " + result.getMethod().getMethodName());
+            TestDataHelper.cleanupAll();
+        }
     }
 }

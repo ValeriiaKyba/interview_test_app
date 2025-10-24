@@ -61,4 +61,8 @@ public class TestDataHelper {
         }
         createdPlayerIds.clear();
     }
+
+    public static boolean isCleanupListEmpty() {
+        return createdPlayerIds.isEmpty();
+    }
 }

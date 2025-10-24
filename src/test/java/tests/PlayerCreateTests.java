@@ -14,9 +14,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
+import static org.testng.Assert.assertEquals;
+
 public class PlayerCreateTests {
 
     private PlayerClient client;
+    private static final String CREATOR = "supervisor";
 
     @BeforeClass
     public void setup() {
@@ -29,16 +32,17 @@ public class PlayerCreateTests {
         AllureHelper.addStep("Positive case: " + description);
 
         Response response = client.createPlayer(editor, request);
+        assertEquals(response.getStatusCode(), 200, "Expected status 200 for " + description);
+
         PlayerCreateResponseDto responseDto = response.as(PlayerCreateResponseDto.class);
 
         SoftAssert soft = new SoftAssert();
 
-        soft.assertEquals(response.getStatusCode(), 200, "Expected status 200 for " + description);
         soft.assertEquals(responseDto.getLogin(), request.getLogin(), "Login should match request");
         soft.assertNotNull(responseDto.getId(), "Expected generated player ID");
         soft.assertEquals(responseDto.getAge(), request.getAge(), "Age should match request");
         soft.assertEquals(responseDto.getGender(), request.getGender(), "Gender should match request");
-        soft.assertEquals(responseDto.getRole(), request.getRole(), "Age should match request");
+        soft.assertEquals(responseDto.getRole(), request.getRole(), "Role should match request");
         soft.assertEquals(responseDto.getScreenName(), request.getScreenName(), "Screen name should match request");
         if (request.getPassword() != null) {
             soft.assertNotNull(responseDto.getPassword(),
@@ -73,7 +77,7 @@ public class PlayerCreateTests {
 
         Response response = client.createPlayer(editor, request);
 
-        Assert.assertEquals(response.getStatusCode(), expectedCode,
+        assertEquals(response.getStatusCode(), expectedCode,
                 String.format("Expected HTTP %d for case: %s", expectedCode, reason));
 
         AllureHelper.attachText("Auth Response", response.asPrettyString());
@@ -87,11 +91,11 @@ public class PlayerCreateTests {
                                      int expectedStatus) {
         AllureHelper.addStep("Duplicate case: " + description);
 
-        Response firstResp = client.createPlayer("supervisor", first);
-        Assert.assertEquals(firstResp.getStatusCode(), 200);
+        Response firstResp = client.createPlayer(CREATOR, first);
+        assertEquals(firstResp.getStatusCode(), 200);
 
-        Response secondResp = client.createPlayer("supervisor", second);
-        Assert.assertEquals(secondResp.getStatusCode(), expectedStatus,
+        Response secondResp = client.createPlayer(CREATOR, second);
+        assertEquals(secondResp.getStatusCode(), expectedStatus,
                 "Expected " + expectedStatus + " for duplicate data");
 
         AllureHelper.attachText("Duplicate Response", secondResp.asPrettyString());
@@ -99,7 +103,9 @@ public class PlayerCreateTests {
 
     @AfterMethod(alwaysRun = true)
     public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleanup after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
+        if (!TestDataHelper.isCleanupListEmpty()) {
+            AllureHelper.addStep("Cleanup after test: " + result.getMethod().getMethodName());
+            TestDataHelper.cleanupAll();
+        }
     }
 }
