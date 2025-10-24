@@ -33,7 +33,7 @@ Override base URL dynamically:
 mvn test -Dbase.url=http://staging.example.com
 ```
 
-### ⚙️ `framework.properties`
+### ⚙️ `configuration.properties`
 ```properties
 base.url=http://3.68.165.45
 thread.count=5
