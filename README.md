@@ -33,7 +33,7 @@ Override base URL dynamically:
 mvn test -Dbase.url=http://staging.example.com
 ```
 
-### ⚙️ `framework.properties`
+### ⚙️ `configuration.properties`
 ```properties
 base.url=http://3.68.165.45
 thread.count=5
@@ -160,7 +160,7 @@ allure generate allure-results --clean -o allure-report
 
 ```bash
 # 1️⃣ Clone repo
-git clone https://github.com/your-org/player-api-framework.git
+git clone https://github.com/ValeriiaKyba/interview_test_app.git
 cd interview_test_app
 
 # 2️⃣ Install dependencies
