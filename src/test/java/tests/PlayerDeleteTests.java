@@ -1,6 +1,5 @@
 package tests;
 
-import clients.PlayerClient;
 import dataProviders.PlayerDeleteDataProvider;
 import dto.request.PlayerDeleteRequestDto;
 import dto.response.PlayerCreateResponseDto;
@@ -8,20 +7,12 @@ import helpers.AllureHelper;
 import helpers.TestDataHelper;
 import io.restassured.response.Response;
 import org.testng.Assert;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import tests.base.BaseApiTest;
 
-public class PlayerDeleteTests {
+public class PlayerDeleteTests extends BaseApiTest {
 
-    private PlayerClient client;
     private static final String CREATOR = "supervisor";
-
-    @BeforeClass
-    public void setup() {
-        client = new PlayerClient();
-    }
 
     // Positive cases
     @Test(dataProvider = "positiveDeletes", dataProviderClass = PlayerDeleteDataProvider.class)
@@ -82,11 +73,5 @@ public class PlayerDeleteTests {
                 String.format("Expected %d for '%s'", expectedCode, description));
 
         AllureHelper.attachText("Response", response.asPrettyString());
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleaning up after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
     }
 }

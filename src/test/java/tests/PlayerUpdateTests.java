@@ -1,6 +1,5 @@
 package tests;
 
-import clients.PlayerClient;
 import dataProviders.PlayerUpdateDataProvider;
 import dto.request.PlayerUpdateRequestDto;
 import helpers.AllureHelper;
@@ -9,21 +8,15 @@ import io.restassured.response.Response;
 import dto.response.PlayerCreateResponseDto;
 import dto.response.PlayerUpdateResponseDto;
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
+import tests.base.BaseApiTest;
 
 import java.util.List;
 
-public class PlayerUpdateTests {
+public class PlayerUpdateTests extends BaseApiTest {
 
-    private PlayerClient client;
     private static final String CREATOR = "supervisor";
-
-    @BeforeClass
-    public void setup() {
-        client = new PlayerClient();
-    }
 
     // Positive cases
     @Test(dataProvider = "positiveUpdate", dataProviderClass = PlayerUpdateDataProvider.class)
@@ -43,7 +36,7 @@ public class PlayerUpdateTests {
             target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
         }
 
-        TestDataHelper.registerForCleanup(target.getId());
+        TestDataHelper.registerForCleanup(target);
 
         PlayerUpdateRequestDto request = getPlayerUpdateRequestDto(updateFields, target);
 
@@ -119,11 +112,11 @@ public class PlayerUpdateTests {
             PlayerCreateResponseDto userB = TestDataHelper.createPlayer(CREATOR, roleToCreate);
             editor = userA.getLogin();
             target = userB;
-            TestDataHelper.registerForCleanup(userA.getId());
-            TestDataHelper.registerForCleanup(userB.getId());
+            TestDataHelper.registerForCleanup(userA);
+            TestDataHelper.registerForCleanup(userB);
         } else {
             target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
-            TestDataHelper.registerForCleanup(target.getId());
+            TestDataHelper.registerForCleanup(target);
         }
 
         Response resp = client.updatePlayer(editor, target.getId(), request);
@@ -146,10 +139,10 @@ public class PlayerUpdateTests {
         AllureHelper.addStep("Duplicate scenario: " + description);
 
         PlayerCreateResponseDto duplicate = TestDataHelper.createPlayer(CREATOR, roleToCreate);
-        TestDataHelper.registerForCleanup(duplicate.getId());
+        TestDataHelper.registerForCleanup(duplicate);
 
         PlayerCreateResponseDto target = TestDataHelper.createPlayer(CREATOR, roleToCreate);
-        TestDataHelper.registerForCleanup(target.getId());
+        TestDataHelper.registerForCleanup(target);
 
         PlayerUpdateRequestDto.Builder builder = new PlayerUpdateRequestDto.Builder()
                 .age(request.getAge())
@@ -198,11 +191,5 @@ public class PlayerUpdateTests {
         soft.assertAll();
 
         AllureHelper.attachText("Player state after 409", getResponse.asPrettyString());
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleaning up after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
     }
 }

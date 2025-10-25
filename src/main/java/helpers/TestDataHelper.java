@@ -11,7 +11,8 @@ import java.util.List;
 public class TestDataHelper {
 
     private static final PlayerClient client = new PlayerClient();
-    private static final List<Long> createdPlayerIds = new ArrayList<>();
+    private static final ThreadLocal<List<PlayerCreateResponseDto>> threadPlayers =
+            ThreadLocal.withInitial(ArrayList::new);
 
 
     public static PlayerCreateResponseDto createPlayer(String creator, String role) {
@@ -31,14 +32,14 @@ public class TestDataHelper {
 
         PlayerCreateResponseDto created = response.as(PlayerCreateResponseDto.class);
         if (created != null && created.getId() != null) {
-            registerForCleanup(created.getId());
+            registerForCleanup(created);
         }
         return created;
     }
 
-    public static void registerForCleanup(Long playerId) {
-        if (playerId != null && !createdPlayerIds.contains(playerId)) {
-            createdPlayerIds.add(playerId);
+    public static void registerForCleanup(PlayerCreateResponseDto player) {
+        if (player != null) {
+            threadPlayers.get().add(player);
         }
     }
 
@@ -48,23 +49,25 @@ public class TestDataHelper {
         return new PlayerPair(editor, target);
     }
 
-    public record PlayerPair(PlayerCreateResponseDto editor, PlayerCreateResponseDto target) {}
+    public record PlayerPair(PlayerCreateResponseDto editor, PlayerCreateResponseDto target) {
+    }
 
     public static void cleanupAll() {
-        AllureHelper.addStep("Cleanup all created players...");
-
-        if (createdPlayerIds.isEmpty()) {
-            AllureHelper.addStep("Nothing to clean up — no players were created in this test.");
+        List<PlayerCreateResponseDto> players = threadPlayers.get();
+        if (players.isEmpty()) {
+            AllureHelper.attachText("Nothing to clean up — no players were created in this test: ", "0");
             return;
         }
 
-        for (Long id : createdPlayerIds) {
+        for (PlayerCreateResponseDto player : players) {
             try {
-                CleanupHelper.deletePlayerIfExists(id);
+                CleanupHelper.deletePlayerIfExists(player.getId());
             } catch (Exception e) {
-                AllureHelper.attachText("Cleanup failed for playerId " + id, e.getMessage());
+                AllureHelper.attachText("Cleanup failed for playerId " + player.getId(), e.getMessage());
             }
         }
-        createdPlayerIds.clear();
+
+        players.clear();
+        threadPlayers.remove();
     }
 }

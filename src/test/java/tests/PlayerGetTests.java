@@ -1,6 +1,5 @@
 package tests;
 
-import clients.PlayerClient;
 import dataProviders.PlayerGetDataProvider;
 import dto.request.PlayerGetByPlayerIdRequestDto;
 import dto.response.PlayerItem;
@@ -11,21 +10,15 @@ import dto.response.PlayerCreateResponseDto;
 import dto.response.PlayerGetAllResponseDto;
 import dto.response.PlayerGetByPlayerIdResponseDto;
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
+import tests.base.BaseApiTest;
 
 import java.util.List;
 
-public class PlayerGetTests {
+public class PlayerGetTests extends BaseApiTest {
 
-    private PlayerClient client;
     private static final String CREATOR = "supervisor";
-
-    @BeforeClass
-    public void setup() {
-        client = new PlayerClient();
-    }
 
     // Positive cases
     @Test(dataProvider = "positiveGet", dataProviderClass = PlayerGetDataProvider.class)
@@ -60,7 +53,7 @@ public class PlayerGetTests {
 
         AllureHelper.attachText("Response", resp.asPrettyString());
 
-        TestDataHelper.registerForCleanup(created.getId());
+        TestDataHelper.registerForCleanup(created);
     }
 
     // Negative cases
@@ -105,15 +98,9 @@ public class PlayerGetTests {
 
         AllureHelper.attachText("Response", resp.asPrettyString());
 
-        TestDataHelper.registerForCleanup(player1.getId());
-        TestDataHelper.registerForCleanup(player2.getId());
-        TestDataHelper.registerForCleanup(player3.getId());
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleaning up after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
+        TestDataHelper.registerForCleanup(player1);
+        TestDataHelper.registerForCleanup(player2);
+        TestDataHelper.registerForCleanup(player3);
     }
 }
 

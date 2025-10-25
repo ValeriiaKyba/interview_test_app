@@ -1,6 +1,5 @@
 package tests;
 
-import clients.PlayerClient;
 import dataProviders.PlayerCreateDataProvider;
 import helpers.AllureHelper;
 import helpers.TestDataHelper;
@@ -8,23 +7,15 @@ import io.restassured.response.Response;
 import dto.request.PlayerCreateRequestDto;
 import dto.response.PlayerCreateResponseDto;
 import org.testng.Assert;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
+import tests.base.BaseApiTest;
 
 import static org.testng.Assert.assertEquals;
 
-public class PlayerCreateTests {
+public class PlayerCreateTests extends BaseApiTest {
 
-    private PlayerClient client;
     private static final String CREATOR = "supervisor";
-
-    @BeforeClass
-    public void setup() {
-        client = new PlayerClient();
-    }
 
     // Positive cases
     @Test(dataProvider = "positivePlayers", dataProviderClass = PlayerCreateDataProvider.class)
@@ -56,6 +47,7 @@ public class PlayerCreateTests {
 
         soft.assertAll();
 
+        TestDataHelper.registerForCleanup(responseDto);
         AllureHelper.attachText("Create Player Response", response.asPrettyString());
     }
 
@@ -93,17 +85,13 @@ public class PlayerCreateTests {
 
         Response firstResp = client.createPlayer(CREATOR, first);
         assertEquals(firstResp.getStatusCode(), 200);
+        PlayerCreateResponseDto firstResponseDto = firstResp.as(PlayerCreateResponseDto.class);
 
         Response secondResp = client.createPlayer(CREATOR, second);
         assertEquals(secondResp.getStatusCode(), expectedStatus,
                 "Expected " + expectedStatus + " for duplicate data");
 
+        TestDataHelper.registerForCleanup(firstResponseDto);
         AllureHelper.attachText("Duplicate Response", secondResp.asPrettyString());
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void cleanupAfterTest(ITestResult result) {
-        AllureHelper.addStep("Cleaning up after test: " + result.getMethod().getMethodName());
-        TestDataHelper.cleanupAll();
     }
 }
